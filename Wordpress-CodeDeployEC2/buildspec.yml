@@ -1,0 +1,30 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo Getting Started
+  pre_build:
+    commands:
+      - echo Installing Apache2WebServer...
+      - apt install apache2 -y
+      - apt sudo apt-get install php libapache2-mod-php php-mysql php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip -y
+      - apt install unzip -y
+      - apt install wget -y
+      - tar -xzvf latest.tar.gz
+      - mv wordpress/* /var/www/html/
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo first test codes
+      - wget -c http://wordpress.org/latest.tar.gz
+      - echo Compiling the codes
+      - service start apache2
+      - echo Build finished, now moving to S3
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - aws s3 sync build/ s3://art-dmn-ds 
+artifacts:
+  files:
+    - 'build/*'
+  name: demoProjectArtifactWP
